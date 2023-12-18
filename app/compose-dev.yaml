@@ -1,0 +1,18 @@
+
+services:
+  griddb:
+    container_name: griddb_server
+    image: griddbnet/griddb:latest
+    ports:
+      - "10001:10001"
+  web:
+    container_name: image-gpt4-vision
+    build: .
+    ports:
+      - "5115:5115"
+    environment:
+      - PORT=5115
+      - HOST=localhost
+      - OPENAI_API_KEY="OPENAI_API_KEY_HERE"
+    depends_on:
+      - griddb
