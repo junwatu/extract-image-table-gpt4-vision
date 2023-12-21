@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const ImageUploader = () => {
 	const [base64Image, setBase64Image] = useState('');
