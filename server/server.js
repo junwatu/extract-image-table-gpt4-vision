@@ -3,6 +3,9 @@ import OpenAI from 'openai';
 import 'dotenv/config';
 
 const app = express();
+app.use(express.json());
+app.use(express.static('public'));
+
 const openai = new OpenAI({
 	apiKey: process.env.OPENAI_API_KEY,
 });
