@@ -27,16 +27,6 @@ async function processImageRequest(imageUrl) {
 	return response.choices[0];
 }
 
-app.get('/', (req, res) => {
-	const jsonData = {
-		urls: {
-			home: '/',
-			processImage: '/process-image'
-		},
-	}
-	res.json(jsonData);
-});
-
 app.post('/process-image', async (req, res) => {
 	try {
 		const imageUrl = req.body.imageData;
