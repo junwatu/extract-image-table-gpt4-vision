@@ -2,6 +2,8 @@
 
 ## Introduction
 
+![blog-gpt4-cover](blog-gpt4-cover.jpg)
+
 In this blog, we will explore how to use GPT-4V to process image data, specifically tabular data from image and store the results in GridDB. We will also build a simple web application using React.js and Node.js that allows users to upload images and view the results of GPT-4V's image processing.
 
 ### What is GPT-4 Vision? 
