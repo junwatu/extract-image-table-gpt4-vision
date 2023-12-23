@@ -2,21 +2,25 @@
 
 ## Introduction
 
+In this blog, we will explore how to use GPT-4V to process image data, specifically tabular data from image and store the results in GridDB. We will also build a simple web application using React.js and Node.js that allows users to upload images and view the results of GPT-4V's image processing.
+
 ### What is GPT-4 Vision? 
-{/* Overview of GPT4-Vision and its capabilities */}
 
 GPT-4 with Vision, sometimes referred to as GPT-4V is one of the OpenAI's product. It allows the model to take in images and answer questions about them. Historically, language model systems have been limited by taking in a single input modality, text. For many use cases, this constrained the areas where models like GPT-4 could be used.
 
-In this blog, we will explore how to use GPT-4V to process image data and store the results in GridDB. We will also build a simple web application that allows users to upload images and view the results of GPT-4V's image processing.
+You can read more about GPT-4V in their official [documentation](https://platform.openai.com/docs/guides/vision).
 
 ### What is GridDB?
-{/* Overview of GridDB and its capabilities */}
 
+GridDB is an open-source, in-memory NoSQL database that is optimized for IoT and big data applications. It is a highly scalable database that can handle large volumes of data with high throughput and low latency. GridDB is also ACID compliant and supports SQL-like queries. 
+
+For more information about GridDB, please visit the [GridDB website](https://griddb.net/).
 
 ### What is Node.js?
-{/* Overview of Node.js and its capabilities */}
 
-- Purpose and scope of the blog
+Node.js is an open-source, cross-platform JavaScript runtime environment that allows developers to build scalable network applications. It is built on top of Google's V8 JavaScript engine and uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. 
+
+For more information about Node.js, please visit the [Node.js website](https://nodejs.org/en/).
 
 ## Getting Started
 
