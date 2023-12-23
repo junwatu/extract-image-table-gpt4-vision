@@ -36,6 +36,17 @@ To install Node.js v20 LTS on Ubuntu using package manager, you need to add addi
 node -v
 ```
 
+### Install GridDB
+
+The GridDB documentation for installation in Ubuntu on WSL can be found [here](https://docs.griddb.net/latest/gettingstarted/wsl/#installing-wsl). To check if GridDB is installed correctly, you can run the following command:
+
+```bash
+$ sudo systemctl status gridstore
+```
+
+
+
+
 ### Get OpenAI API Key
 
 You can get OpenAI API key by signing up for an account at [OpenAI](https://platform.openai.com/api-keys/). To keep your API key safe, you can store it in a `.env` file in the root directory of the project. The `.env` file should look like this:
