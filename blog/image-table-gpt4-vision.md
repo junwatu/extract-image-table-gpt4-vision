@@ -24,7 +24,7 @@ Node.js is an open-source, cross-platform JavaScript runtime environment that al
 
 React.js is an open-source JavaScript library for building user interfaces. It is maintained by Facebook and a community of individual developers and companies. React.js allows developers to create reusable UI components that can be used across different applications. For more information about React.js, please visit the [React.js website](https://reactjs.org/).
 
-## Installation
+## Prerequisites
 
 This project is tested on Ubuntu 20.04.2 LTS WSL 2. You need OpenAI API key, GridDB, Node.js, and React.js to run this project. You can install them by following the instructions below.
 
@@ -44,15 +44,35 @@ The GridDB documentation for installation in Ubuntu on WSL can be found [here](h
 $ sudo systemctl status gridstore
 ```
 
-### Get OpenAI API Key
+### OpenAI Account and API Key
 
-You can get OpenAI API key by signing up for an account at [OpenAI](https://platform.openai.com/api-keys/). To keep your API key safe, you can store it in a `.env` file in the root directory of the project. The `.env` file should look like this:
+You can get OpenAI API key by signing up for an account at [OpenAI](https://platform.openai.com/api-keys/). To keep your API key safe, you can store it in a `.env` file in the root directory of the project (more on this later).
+
+## Running the Project
+
+To get started, you need to clone this repository and install the dependencies. You can do this by running the following commands:
+
+```bash
+git clone git@github.com:junwatu/extract-image-table-gpt4-vision.git
+```
+Change directory to the project root `server` directory and install the dependencies:
+
+```bash
+cd extract-image-table-gpt4-vision/server
+npm install
+```
+Create `.env` file in the root directory of the project. The `.env` file should look like this:
 
 ```
 OPENAI_API_KEY=<your-api-key>
 ```
-
 and add `.env` to `.gitignore` file to prevent it from being pushed to the repository.
+
+Run the server:
+
+```bash
+npm start
+```
 
 
 ## Understanding GPT4-Vision
