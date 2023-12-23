@@ -28,6 +28,14 @@ React.js is an open-source JavaScript library for building user interfaces. It i
 
 This project is tested on Ubuntu 20.04.2 LTS WSL 2. You need OpenAI API key, GridDB, Node.js, and React.js to run this project. You can install them by following the instructions below.
 
+### Install Node.js
+
+To install Node.js v20 LTS on Ubuntu using package manager, you need to add additional `deb` repository. Please read and follow this [documentation](https://github.com/nodesource/distributions?tab=readme-ov-file#ubuntu-versions). After that test if the Node.js installed correctly by typing this command in the terminal:
+
+```bash
+node -v
+```
+
 ### Get OpenAI API Key
 
 You can get OpenAI API key by signing up for an account at [OpenAI](https://platform.openai.com/api-keys/). To keep your API key safe, you can store it in a `.env` file in the root directory of the project. The `.env` file should look like this:
