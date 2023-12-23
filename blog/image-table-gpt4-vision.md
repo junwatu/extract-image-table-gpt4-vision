@@ -1,10 +1,13 @@
 # Processing Image Data using GPT4-Vision, Node.js, and GridDB
 
-## Introduction
 
 ![blog-gpt4-cover](blog-gpt4-cover.jpg)
 
-In this blog, we will explore how to use GPT-4V to process image data, specifically tabular data from image and store the results in GridDB. We will also build a simple web application using React.js and Node.js that allows users to upload images and view the results of GPT-4V's image processing.
+In this blog, we will explore how to use GPT-4 Vision to process image data, specifically tabular data from image and store the results in GridDB. We will build a simple web application using React.js and Node.js that allows users to upload images and view the results of GPT-4V's image processing.
+
+## Meet the Stacks
+
+We will use Node.js, GridDB, and OpenAI's GPT-4 Vision. For user interface, we will use React.js.
 
 ### What is GPT-4 Vision? 
 
@@ -23,6 +26,12 @@ For more information about GridDB, please visit the [GridDB website](https://gri
 Node.js is an open-source, cross-platform JavaScript runtime environment that allows developers to build scalable network applications. It is built on top of Google's V8 JavaScript engine and uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. 
 
 For more information about Node.js, please visit the [Node.js website](https://nodejs.org/en/).
+
+### What is React.js?
+
+React.js is an open-source JavaScript library for building user interfaces. It is maintained by Facebook and a community of individual developers and companies. React.js allows developers to create reusable UI components that can be used across different applications.
+
+For more information about React.js, please visit the [React.js website](https://reactjs.org/).
 
 ## Getting Started
 
@@ -53,18 +62,6 @@ For more information about Node.js, please visit the [Node.js website](https://n
 - Designing the application workflow
 - Integrating Node.js, GPT4-Vision, and GridDB
 - Handling user inputs and displaying processed data
-
-## Best Practices and Optimization
-
-- Performance optimization tips
-- Ensuring data security and privacy
-- Scalability considerations
-
-## Conclusion
-
-- Summary of key points
-- Potential applications and future developments
-- Final thoughts
 
 ## References
 
