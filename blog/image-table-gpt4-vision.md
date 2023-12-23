@@ -50,7 +50,7 @@ You can get OpenAI API key by signing up for an account at [OpenAI](https://plat
 
 ## Running the Project
 
-To get started, you need to clone this repository and install the dependencies. You can do this by running the following commands:
+To get started, you need to clone this [repository](https://github.com/junwatu/extract-image-table-gpt4-vision) and install the dependencies. You can do this by running the following commands:
 
 ```bash
 git clone git@github.com:junwatu/extract-image-table-gpt4-vision.git
