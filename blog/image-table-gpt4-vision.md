@@ -44,9 +44,6 @@ The GridDB documentation for installation in Ubuntu on WSL can be found [here](h
 $ sudo systemctl status gridstore
 ```
 
-
-
-
 ### Get OpenAI API Key
 
 You can get OpenAI API key by signing up for an account at [OpenAI](https://platform.openai.com/api-keys/). To keep your API key safe, you can store it in a `.env` file in the root directory of the project. The `.env` file should look like this:
