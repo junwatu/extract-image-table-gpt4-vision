@@ -41,13 +41,13 @@ node -v
 The GridDB documentation for installation in Ubuntu on WSL can be found [here](https://docs.griddb.net/latest/gettingstarted/wsl/#installing-wsl). To check if GridDB is installed correctly, you can run the following command:
 
 ```bash
-$ sudo systemctl status gridstore
+sudo systemctl status gridstore
 ```
 
 If GridDB is not started, you can start it using this command:
 
 ```bash
-$ sudo systemctl start gridstore
+sudo systemctl start gridstore
 ```
 
 ### OpenAI Account and API Key
@@ -61,17 +61,20 @@ To get started, you need to clone this [repository](https://github.com/junwatu/e
 ```bash
 git clone git@github.com:junwatu/extract-image-table-gpt4-vision.git
 ```
+
 Change directory to the project root `server` directory and install the dependencies:
 
 ```bash
 cd extract-image-table-gpt4-vision/server
 npm install
 ```
+
 Create `.env` file in the root directory of the project. The `.env` file should look like this:
 
 ```
 OPENAI_API_KEY=<your-api-key>
 ```
+
 and add `.env` to `.gitignore` file to prevent it from being pushed to the repository.
 
 Run the server:
@@ -92,9 +95,64 @@ The project follows a standard web application architecture. When an image conta
 
 ## Understanding GPT4-Vision
 
-- Overview of GPT4-Vision's features
-- How GPT4-Vision processes image data
-- Advantages of using GPT4-Vision for image processing
+By using Node.js, it's easy to call GPT4 Vision API from OpenAI. The model is best at answering general questions about what is present in the images. For example, to describe the image in certain URL.
+
+```js
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
+async function getImageDescription() {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4-vision-preview",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "What’s in this image?" },
+          {
+            type: "image_url",
+            image_url: {
+              "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+            },
+          },
+        ],
+      },
+    ],
+  });
+  console.log(response.choices[0]);
+}
+```
+
+GPT4 Vision will processes image data based on the prompt.
+
+For our project, we can design a prompt to only recognize the tabular data from the uploaded image. For example, we can use this prompt to extract tabular data from the image:
+
+[//]: # (need a better prompt)
+
+```
+Recreate table in the image.
+```
+
+Then in the code, we can use the prompt to only extract the tabular data from the image:
+
+```js
+messages: [
+      {
+        role: "user",
+        content: [
+            { type: "text", text: "Recreate table in the image." },
+            { type: "image_url", 
+              image_url: {
+                "url": sampleImageAddress,
+              },
+            },
+        ],
+    },
+],
+```
+
+[//]: # (Advantages of using GPT4-Vision for image processing)
 
 ## Integrating GPT4-Vision with Node.js
 
