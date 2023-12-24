@@ -44,6 +44,12 @@ The GridDB documentation for installation in Ubuntu on WSL can be found [here](h
 $ sudo systemctl status gridstore
 ```
 
+If GridDB is not started, you can start it using this command:
+
+```bash
+$ sudo systemctl start gridstore
+```
+
 ### OpenAI Account and API Key
 
 You can get OpenAI API key by signing up for an account at [OpenAI](https://platform.openai.com/api-keys/). To keep your API key safe, you can store it in a `.env` file in the root directory of the project (more on this later).
@@ -74,6 +80,11 @@ Run the server:
 npm start
 ```
 
+In browser, go to the default project URL: `http://localhost:5115` and try to upload image that contains tabular data.
+
+[//]: # (todo: create a gif to showcase the project)
+
+## Project Architecture
 
 ## Understanding GPT4-Vision
 
