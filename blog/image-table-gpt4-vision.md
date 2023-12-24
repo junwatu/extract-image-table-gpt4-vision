@@ -86,6 +86,8 @@ In browser, go to the default project URL: `http://localhost:5115` and try to up
 
 ## Project Architecture
 
+The project architecture is pretty straight forward. When you upload the image contains tabular data, Node.js will call GPT4 Vision from OpenAI to process the image and then save the result in GridDB database. 
+
 ## Understanding GPT4-Vision
 
 - Overview of GPT4-Vision's features
