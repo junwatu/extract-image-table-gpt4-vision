@@ -19,3 +19,7 @@ export async function getDatabyID(id) {
 export async function getAllData() {
 	return await GridDB.queryAll(conInfo, store);
 }
+
+export async function  info() {
+	return await GridDB.containersInfo(store);
+}
