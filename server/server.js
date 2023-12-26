@@ -38,6 +38,15 @@ app.post('/process-image', async (req, res) => {
 	}
 });
 
+app.get('/info', async (req, res) => {
+	try {
+		const result = await info();
+		res.json(result);
+	} catch (error) {
+		res.status(500).send('Error getting container info');
+	}
+})
+
 const PORT = process.env.PORT || 5115;
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
