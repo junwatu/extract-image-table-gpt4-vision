@@ -13,7 +13,7 @@ const ImageUploader = () => {
             const response = await fetch('/process-image', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: base64Image })
+                body: JSON.stringify({ imageData: base64Image })
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -43,7 +43,7 @@ const ImageUploader = () => {
 		if (base64Image) {
 			// Logic to send the base64Image to the server
 			console.log('Base64 Image:', base64Image);
-			// postBase64Image(base64Image); // Example function call
+			postBase64Image(base64Image);
 		} else {
 			alert('Please select an image first.');
 		}
