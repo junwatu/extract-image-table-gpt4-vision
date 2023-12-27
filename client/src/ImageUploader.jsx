@@ -1,53 +1,45 @@
 import { useState } from 'react';
 
 const ImageUploader = () => {
-	const [base64Image, setBase64Image] = useState('');
-	const [fileName, setFileName] = useState('No file chosen');
+	const [selectedFile, setSelectedFile] = useState(null);
+    const [fileName, setFileName] = useState('No file chosen');
 
-	const isValidFileType = (file) => {
-		return ['image/jpeg', 'image/png'].includes(file.type);
-	};
+    const isValidFileType = (file) => {
+        return ['image/jpeg', 'image/png'].includes(file.type);
+    };
 
-	const postBase64Image = async (base64Image) => {
-        try {
-            const response = await fetch('/process-image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ imageData: base64Image })
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            // Handle the response here
-			console.log(response)
-        } catch (error) {
-            console.error('Error posting image:', error);
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file && isValidFileType(file)) {
+            setFileName(file.name); 
+            setSelectedFile(file); 
+        } else {
+            alert('Please select a valid image file (JPG or PNG).');
         }
     };
 
-	const handleFileChange = (e) => {
-		const file = e.target.files[0];
-		if (file && isValidFileType(file)) {
-			setFileName(file.name); // Update the file name for display
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setBase64Image(reader.result);
-			};
-			reader.readAsDataURL(file);
-		} else {
-			alert('Please select a valid image file (JPG or PNG).');
-		}
-	};
+    const handleUpload = async () => {
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append('image', selectedFile); 
 
-	const handleUpload = () => {
-		if (base64Image) {
-			// Logic to send the base64Image to the server
-			console.log('Base64 Image:', base64Image);
-			postBase64Image(base64Image);
-		} else {
-			alert('Please select an image first.');
-		}
-	};
+            try {
+                const response = await fetch('/process-image', {
+                    method: 'POST',
+                    body: formData, 
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Handle the successful response here
+				console.log(response)
+            } catch (error) {
+                console.error('Error posting image:', error);
+            }
+        } else {
+            alert('Please select an image first.');
+        }
+    };
 
 	return (
 		<div className="flex flex-col items-center justify-center p-4 space-y-4">
@@ -61,7 +53,7 @@ const ImageUploader = () => {
 				</svg>
 				<span className="mt-2 text-base leading-normal overflow-hidden text-ellipsis whitespace-nowrap">{fileName}</span>
 
-				<input type='file' className="hidden" accept="image/jpeg, image/png" onChange={handleFileChange} />
+				<input type='file' className="hidden" accept="image/jpeg, image/png" onChange={handleFileChange} name="image"/>
 			</label>
 			<button
 				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
