@@ -3,6 +3,9 @@ import OpenAI from 'openai';
 import 'dotenv/config';
 import { saveData, getAllData, getDatabyID, info } from './griddbservices.js';
 
+const PORT = process.env.PORT || 5115;
+const HOST = process.env.HOST || "localhost";
+
 const app = express();
 app.use(express.json());
 app.use(express.static('public'));
@@ -31,8 +34,9 @@ async function processImageRequest(imageUrl) {
 app.post('/process-image', async (req, res) => {
 	try {
 		const imageUrl = req.body.imageData;
-		const result = await processImageRequest(imageData);
-		res.json(result);
+		//const result = await processImageRequest(imageData);
+		console.log("from the server:\n");
+		res.json({result: imageUrl});
 	} catch (error) {
 		res.status(500).send('Error processing image request');
 	}
@@ -47,7 +51,6 @@ app.get('/info', async (req, res) => {
 	}
 })
 
-const PORT = process.env.PORT || 5115;
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
 	console.log(`Server is running on port ${PORT}`);
 });

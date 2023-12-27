@@ -8,6 +8,23 @@ const ImageUploader = () => {
 		return ['image/jpeg', 'image/png'].includes(file.type);
 	};
 
+	const postBase64Image = async (base64Image) => {
+        try {
+            const response = await fetch('/process-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: base64Image })
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Handle the response here
+			console.log(response)
+        } catch (error) {
+            console.error('Error posting image:', error);
+        }
+    };
+
 	const handleFileChange = (e) => {
 		const file = e.target.files[0];
 		if (file && isValidFileType(file)) {
