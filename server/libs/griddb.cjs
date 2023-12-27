@@ -57,6 +57,7 @@ async function initGridDbTS() {
 	}
 }
 
+/*
 async function containersInfo(store) {
 	for (
 		var index = 0;
@@ -106,6 +107,38 @@ async function containersInfo(store) {
 			});
 	}
 }
+*/
+
+async function containersInfo(store) {
+    let containers = [];
+    for (let index = 0; index < store.partitionController.partitionCount; index++) {
+        try {
+            const nameList = await store.partitionController.getContainerNames(index, 0, -1);
+            for (const element of nameList) {
+                const info = await store.getContainerInfo(element);
+                if (info.name === containerName) {
+                    let containerInfo = {
+                        'Container Info': info.name,
+                        'Type': info.type == griddb.ContainerType.COLLECTION ? 'Collection' : 'TimeSeries',
+                        'Column Count': info.columnInfoList.length,
+                        'Columns': info.columnInfoList.map(column => ({ 'Name': column[0], 'Type': column[1] }))
+                    };
+                    containers.push(containerInfo);
+                }
+            }
+        } catch (err) {
+            if (err.constructor.name == 'GSException') {
+                for (let i = 0; i < err.getErrorStackSize(); i++) {
+                    console.error(`Error ${i}: ${err.getErrorCode(i)}, ${err.getMessage(i)}`);
+                }
+            } else {
+                console.error(err);
+            }
+        }
+    }
+    return containers;
+}
+
 
 /**
  * Insert data to GridDB
