@@ -47,9 +47,7 @@ async function processImageRequest(filePath) {
 
 app.post('/process-image', upload.single('image'), async (req, res) => {
     try {
-        //const result = await processImageRequest(req.file.path);
-		const result = req.file.path;
-		console.log(result)
+        const result = await processImageRequest(req.file.path);
         res.json(result);
     } catch (error) {
         res.status(500).send('Error processing image request');
