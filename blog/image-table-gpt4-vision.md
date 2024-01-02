@@ -95,7 +95,13 @@ The project follows a standard web application architecture. When an image conta
 
 ## Understanding GPT4-Vision
 
-By using Node.js, it's easy to call GPT4 Vision API from OpenAI. The model is best at answering general questions about what is present in the images. For example, to describe the image in certain URL.
+The GPT4 Vision model is best at answering general questions about what is present in the images. For example, to describe an image, we can use a simple prompt:
+
+```js
+"What’s in this image?"
+```
+
+And then use the prompt in GPT4-Vision API:
 
 ```js
 import OpenAI from "openai";
@@ -124,7 +130,7 @@ async function getImageDescription() {
 }
 ```
 
-GPT4 Vision will processes image data based on the prompt.
+GPT4 Vision model will processes the image based on the prompt and will return the result for further processing.
 
 For our project, we can design a prompt to only recognize the tabular data from the uploaded image. For example, we can use this prompt to extract tabular data from the image:
 
@@ -156,6 +162,43 @@ messages: [
 
 ## Integrating GPT4-Vision with Node.js
 
+We can use Node.js and Express to build a simple web server and create image processing route that call GPT4-Vision API after the image is finished uploaded. 
+
+For example, the `process-image` route will accept uploaded image and then will call the `processImageRequest` function:
+
+```js
+app.post('/process-image', upload.single('image'), async (req, res) => {
+    try {
+        const result = await processImageRequest(req.file.path);
+        const result = req.file.path;
+        console.log(result)
+        res.json(result);
+    } catch (error) {
+        res.status(500).send('Error processing image request');
+    }
+});
+```
+
+The `processImageRequest` essentially is a GPT4 Vision API wrapper function.
+
+```js
+async function processImageRequest(filePath) {
+    const response = await openai.chat.completions.create({
+        model: "gpt-4-vision-preview",
+        messages: [
+            {
+                role: "user",
+                content: [
+                    { type: "text", text: "Recreate table in the image." },
+                    { type: "image_file", image_file: { "path": filePath } },
+                ],
+            },
+        ],
+        max_tokens: 1024,
+    });
+    return response.choices[0];
+}
+```
 - Setting up a Node.js server
 - Integrating GPT4-Vision API with Node.js
 - Handling image data in Node.js
