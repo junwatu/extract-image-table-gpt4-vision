@@ -199,10 +199,6 @@ async function processImageRequest(filePath) {
 }
 ```
 
-- Setting up a Node.js server
-- Integrating GPT4-Vision API with Node.js
-- Handling image data in Node.js
-
 ## Storing Processed Data in GridDB
 
 - Overview of GridDB and its features
