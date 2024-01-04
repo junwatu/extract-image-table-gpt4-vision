@@ -162,16 +162,15 @@ messages: [
 
 ## Integrating GPT4-Vision with Node.js
 
-We can use Node.js and Express to build a simple web server and create image processing route that call GPT4-Vision API after the image is finished uploaded. 
+We can use Node.js and Express.js to build a simple web server and then create an image processing route that call GPT4-Vision API after the image is finished uploaded. 
 
-For example, the `process-image` route will accept uploaded image and then will call the `processImageRequest` function:
+For example, the `process-image` route will accept uploaded image and then will call the `processImageRequest` function to process the image using OpenAI API:
 
 ```js
 app.post('/process-image', upload.single('image'), async (req, res) => {
     try {
         const result = await processImageRequest(req.file.path);
-        const result = req.file.path;
-        console.log(result)
+        // save the result into the database
         res.json(result);
     } catch (error) {
         res.status(500).send('Error processing image request');
@@ -179,7 +178,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
 });
 ```
 
-The `processImageRequest` essentially is a GPT4 Vision API wrapper function.
+The `processImageRequest` function is essentially a GPT4 Vision API wrapper function. The code will call the API and then process the image based on the designed prompt earlier:
 
 ```js
 async function processImageRequest(filePath) {
@@ -199,6 +198,7 @@ async function processImageRequest(filePath) {
     return response.choices[0];
 }
 ```
+
 - Setting up a Node.js server
 - Integrating GPT4-Vision API with Node.js
 - Handling image data in Node.js
