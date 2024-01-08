@@ -13,6 +13,11 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
+/**----Prompts----*/
+const cleanupPrompt = `I need you to extract the table data from this message and provide the answer in JSON format. Answer only the JSON data, nothing else.`;
+const tablePrompt = "Recreate table in the image.";
+
+
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'uploads/'); // Destination folder
@@ -40,7 +45,7 @@ async function processImageRequest(filePath) {
             {
                 role: "user",
                 content: [
-                    { type: "text", text: "Recreate table in the image." },
+                    { type: "text", text: tablePrompt },
                     { type: "image_url", image_url: { "url": encodedImage } },
                 ],
             },
@@ -50,12 +55,39 @@ async function processImageRequest(filePath) {
     return response;
 }
 
+
+async function cleanupData(data) {
+    const response = await openai.chat.completions.create({
+        model: "gpt-4-1106-preview",
+        messages: [
+            {
+                "role": "system",
+                "content": "you are a smart table data extractor"
+            },
+            {
+                "role": "user",
+                "content": `${cleanupPrompt} \n\n${data}`
+            }
+        ],
+        response_format: { type: "json_object" },
+        temperature: 1,
+        max_tokens: 2000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+    });
+
+    return response;
+}
+
 app.post('/process-image', upload.single('image'), async (req, res) => {
     try {
         const result = await processImageRequest(req.file.path);
         console.log(result)
         if (result.choices[0].finish_reason === 'stop') {
-            res.json({ result: result.choices[0], status: true });
+
+            const cleanedData = await cleanupData(result.choices[0].message.content);
+            res.json({ result: cleanedData, status: true });
         } else {
             res.json({ result, status: false });
         }
