@@ -3,8 +3,8 @@ import { useState } from 'react';
 const ImageUploader = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileName, setFileName] = useState('No file chosen');
-    const [uploading, setUploading] = useState(false); // New state variable for upload status
-
+    const [uploading, setUploading] = useState(false); 
+    
     const isValidFileType = (file) => {
         return ['image/jpeg', 'image/png'].includes(file.type);
     };
