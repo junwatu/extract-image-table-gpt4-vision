@@ -1,8 +1,9 @@
 import 'dotenv/config';
 import OpenAI from 'openai';
-import express from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs/promises';
+import express, { response } from 'express';
 import { saveData, getAllData, getDatabyID, info } from './griddbservices.js';
 
 const PORT = process.env.PORT || 5115;
@@ -29,6 +30,10 @@ const openai = new OpenAI({
 });
 
 async function processImageRequest(filePath) {
+    const imageBuffer = await fs.readFile(filePath);
+    const base64Image = imageBuffer.toString('base64');
+    const encodedImage = `data:image/jpeg;base64,{${base64Image}}`;
+
     const response = await openai.chat.completions.create({
         model: "gpt-4-vision-preview",
         messages: [
@@ -36,20 +41,26 @@ async function processImageRequest(filePath) {
                 role: "user",
                 content: [
                     { type: "text", text: "Recreate table in the image." },
-                    { type: "image_file", image_file: { "path": filePath } },
+                    { type: "image_url", image_url: { "url": encodedImage } },
                 ],
             },
         ],
         max_tokens: 1024,
     });
-    return response.choices[0];
+    return response;
 }
 
 app.post('/process-image', upload.single('image'), async (req, res) => {
     try {
         const result = await processImageRequest(req.file.path);
-        res.json(result);
+        console.log(result)
+        if (result.choices[0].finish_reason === 'stop') {
+            res.json({ result: result.choices[0], status: true });
+        } else {
+            res.json({ result, status: false });
+        }
     } catch (error) {
+        console.log(error);
         res.status(500).send('Error processing image request');
     }
 });
