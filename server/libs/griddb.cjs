@@ -1,6 +1,6 @@
 const griddb = require('griddb-node-api');
 
-const containerName = 'TableStorage';
+const containerName = 'TableDataStorage';
 
 const initStore = async () => {
 	const factory = griddb.StoreFactory.getInstance();
