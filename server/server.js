@@ -14,16 +14,15 @@ app.use(express.json());
 app.use(express.static('public'));
 
 /**----Prompts----*/
-const cleanupPrompt = `I need you to extract the table data from this message and provide the answer in JSON format. Answer only the JSON data, nothing else.`;
+const cleanupPrompt = `I need you to extract the table data from this message and provide the answer in markdown format. Answer only the markdown table data, nothing else. do not use code blocks. \n\n`;
 const tablePrompt = "Recreate table in the image.";
 
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'uploads/'); // Destination folder
+        cb(null, 'uploads/'); 
     },
-    filename: function(req, file, cb) {
-        // Create a file name with the original extension
+    filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
@@ -69,7 +68,6 @@ async function cleanupData(data) {
                 "content": `${cleanupPrompt} \n\n${data}`
             }
         ],
-        response_format: { type: "json_object" },
         temperature: 1,
         max_tokens: 2000,
         top_p: 1,
@@ -85,7 +83,6 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
         const result = await processImageRequest(req.file.path);
         console.log(result)
         if (result.choices[0].finish_reason === 'stop') {
-
             const cleanedData = await cleanupData(result.choices[0].message.content);
             res.json({ result: cleanedData, status: true });
         } else {
