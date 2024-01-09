@@ -87,13 +87,12 @@ In the browser, go to the default project URL: `http://localhost:5115` and try t
 
 ![app screenshot](assets/app-screenshot.png )
 
-GPT-4 Vision will process the image and extract the tabular data from it. The tabular data will be displayed on the web page.
+GPT-4 Vision will process the image and extract the tabular data from it then the tabular data will be displayed on the web page. 
 
-> Please note there is a limitation in this project. The image must contain only tabular data. If the image contains other text or images, the GPT-4 Vision model in the current state will not be able to process it.
+> Please read this [note](#limitations) about the limitation of this project.
+
 
 ## Project Architecture
-
-![project data diagram](assets/project-data-gpt4.png)
 
 This architecture diagram outlines a data processing and visualization workflow that incorporates GPT-4 Vision, Node.js, and GridDB. Here's the breakdown:
 
@@ -105,6 +104,8 @@ This architecture diagram outlines a data processing and visualization workflow 
 
 The project at hand is a web application that is designed to be simple yet powerful. The application is enriched with the advanced capabilities of GPT-4 Vision model, which elevates its functionality to a whole new level.
 
+![project data diagram](assets/project-data-gpt4.png)
+
 ## Understanding GPT4-Vision
 
 The GPT4 Vision model is best at answering general questions about what is present in the images. For example, to describe an image, we can use a simple prompt:
@@ -113,7 +114,7 @@ The GPT4 Vision model is best at answering general questions about what is prese
 "What's in this image?"
 ```
 
-And then use the prompt in GPT4-Vision API:
+And then use the prompt in GPT4-Vision API with some image from the internet:
 
 ```js
 import OpenAI from "openai";
@@ -170,7 +171,7 @@ messages: [
 ],
 ```
 
-[//]: # (Advantages of using GPT4-Vision for image processing)
+The advantage of using GPT4 Vision from OpenAI is that we don't need to train the model to recognize the tabular data from the image. We only need to design a prompt that will be used to process the image and the model is well integrated with other OpenAI models, such as GPT4, to further process the result.
 
 ## Integrating GPT4-Vision with Node.js
 
@@ -214,7 +215,7 @@ async function processImageRequest(filePath) {
     return response;
 }
 ```
-In the code, we use the encoded `base64` format for the image input in GPT4 Vision API. This is because it is easier to reference the image stored in the server's local storage.
+In the code, we use the encoded `base64` format for the image input in GPT4 Vision API. This is because it is easier to reference the image stored in the server's local storage than create a public URL for the image.
 
 For a better result, we will feed the result from the `processImageRequest` function into a more general OpenAI model called GPT4 to extract the tabular data only: 
 
@@ -249,7 +250,7 @@ Essentially, the `cleanupData` function will clean up the result from the `proce
 
 ## Storing Processed Data in GridDB
 
-GridDB will be used to store the markdown data from GPT4 after the image is processed and the data result is cleaned up. To store the data in GridDB, we will use the `saveData` function. This function is in the `server/griddbservices.js` file:
+After image processing and data cleanup, we can store the result in GridDB. We will use the `saveData` function, a wrapper function for the `put` operation in GridDB. This function is in the `server/griddbservices.js` file:
 
 ```js
 export async function saveData({ tableData }) {
@@ -330,13 +331,15 @@ If we run the route in the browser, the server will respond with all the data sa
 
 ## Building an End-to-End Application
 
+The source code for the client or user interface is in the `client` directory. The client is a React.js application.
+
 ### Main Application Entry
 
 The upload user interface is pretty simple. We use the React library for easier user interface development.
 
 ![upload ui](assets/upload-ui.png)
 
-Here is the main code for the app:
+Here is the main entry code for the app:
 
 ```jsx
 import React, { useState } from 'react';
@@ -366,7 +369,7 @@ const App = () => {
 
 export default App;
 ```
-The main application entry consists of two components: `<ImageUploader>` and `<ReactMarkdown>`. The `<ImageUploader>` component is responsible for uploading the image to the server, and it returns a result that will be handled by any function that is attached to the `onMarkdownFetch` prop. The markdown data will be rendered in the `<ReactMarkdown>` component.
+The main application entry consists of two components: `<ImageUploader>` and `<ReactMarkdown>`. The `<ImageUploader>` component is responsible for uploading the image to the server, and it returns a result that will be handled by any function that is attached to the `onMarkdownFetch` prop and then the markdown data will be rendered in the `<ReactMarkdown>` component.
 
 ### Image Uploader
 
@@ -404,7 +407,7 @@ const handleUpload = async () => {
 
 ###  Markdown Renderer
 
-Luckily, there is a React component in the npm package readily used for rendering markdown purposes. The [react-markdown](https://github.com/remarkjs/react-markdown) is easy to use and integrate with any React application. 
+Luckily, there is a React component in the npm package readily used for rendering markdown purposes. The [react-markdown](https://github.com/remarkjs/react-markdown) component is easy to use and integrate with any React application. 
 
 ```jsx
 import ReactMarkdown from 'react-markdown';
@@ -416,7 +419,7 @@ import rehypeRaw from 'rehype-raw';
 ...
 ```
 
-We need to add `remark-gfm` and `rehype-raw` plugins. The `remark-gfm` plugin is used to render the markdown table, and the `rehype-raw` plugin is used to render the markdown table as a raw HTML element so we can add style to it later.
+Also, we need to add `remark-gfm` and `rehype-raw` plugins. The `remark-gfm` plugin is used to render the markdown table, and the `rehype-raw` plugin is used to render the markdown table as a raw HTML element so we can add style to it later.
 
 
 ## Limitations
