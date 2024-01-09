@@ -139,7 +139,7 @@ For our project, we can design a prompt to only recognize the tabular data from 
 
 [//]: # (need a better prompt)
 
-```
+```js
 Recreate the table in the image.
 ```
 
@@ -207,10 +207,10 @@ async function processImageRequest(filePath) {
 ```
 In the code, we use the encoded `base64` format for the image input in GPT4 Vision API. This is because it is easier to reference the image stored in the server's local storage.
 
-For a better result, we will feed the result from the `processImageRequest` function into a more general OpenAI's model called GPT4 to extract the tabular data only: 
+For a better result, we will feed the result from the `processImageRequest` function into a more general OpenAI model called GPT4 to extract the tabular data only: 
 
 ```js
-const cleanupPrompt = `I need you to extract the table data from this message and provide the answer in markdown format. Answer only the markdown table data, nothing else. do not use code blocks. \n\n`;
+const cleanupPrompt = `I need you to extract the table data from this message and provide the answer in markdown format. Answer only the markdown table data, nothing else. Do not use code blocks. \n\n`;
 
 async function cleanupData(data) {
     const response = await openai.chat.completions.create({
@@ -236,41 +236,41 @@ async function cleanupData(data) {
 }
 ```
 
-Essentially, the `cleanupData` function will clean up the result from the `processImageRequest` function  by the help of specific prompts. The result will be a markdown table data that can be displayed on the web page.
+Essentially, the `cleanupData` function will clean up the result from the `processImageRequest` function by the help of specific prompts. The result will be a markdown table of data that can be displayed on the web page.
 
 ## Storing Processed Data in GridDB
 
-GridDB will be used to store the markdwon data from GPT4 after the image is processed and the data result is cleaned up. To store the data in GridDB, we will use the `saveData` function. This function is in the `server/griddbservices.js` file:
+GridDB will be used to store the markdown data from GPT4 after the image is processed and the data result is cleaned up. To store the data in GridDB, we will use the `saveData` function. This function is in the `server/griddbservices.js` file:
 
 ```js
 export async function saveData({ tableData }) {
-	const id = generateRandomID();
-	const data = String(tableData);
-	const packetInfo = [parseInt(id), data];
-	const saveStatus = await GridDB.insert(packetInfo, collectionDb);
-	return saveStatus;
+    const id = generateRandomID();
+    const data = String(tableData);
+    const packetInfo = [parseInt(id), data];
+    const saveStatus = await GridDB.insert(packetInfo, collectionDb);
+    return saveStatus;
 }
 ```
 
-The GridDB container only have two columns: `id` and `data`. The `id` column is used to identify the data and the `data` column is used to store the markdown table data from GPT4. You can find this snippet code in the `server/libs/griddb.cjs` file.
+The GridDB container only has two columns: `id` and `data`. The `id` column is used to identify the data, and the `data` column is used to store the markdown table data from GPT4. This snippet code is in the `server/libs/griddb.cjs` file.
 
 ```js
 function initContainer() {
-	const conInfo = new griddb.ContainerInfo({
-		name: containerName,
-		columnInfoList: [
-			['id', griddb.Type.INTEGER],
-			['data', griddb.Type.STRING],
-		],
-		type: griddb.ContainerType.COLLECTION,
-		rowKey: true,
-	});
+    const conInfo = new griddb.ContainerInfo({
+        name: containerName,
+        columnInfoList: [
+            ['id', griddb.Type.INTEGER],
+            ['data', griddb.Type.STRING],
+        ],
+        type: griddb.ContainerType.COLLECTION,
+        rowKey: true,
+    });
 
-	return conInfo;
+    return conInfo;
 }
 ```
 
-The `saveData` function can be called in the `process-image` route. The code in the route will check if the result from GPT4 is finished or not. If the result is finished, the code will clean up the result and then save it to GridDB database: 
+The `saveData` function can be called in the `process-image` route. The code in the route will check if the result from GPT4 is finished. If the result is finished, the code will clean up the result and then save it to the GridDB database: 
 
 ```js
 app.post('/process-image', upload.single('image'), async (req, res) => {
@@ -299,7 +299,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
 });
 ```
 
-To result will be directly displayed on the web page. The reason not to retrieve the data from GridDB is to keep the project simple. You can find the code for the `process-image` route in the `server/server.js` file.
+The result will be directly displayed on the web page. The reason not to retrieve the data from GridDB is to keep the project simple. You can find the code for the `process-image` route in the `server/server.js` file.
 
 However, if you want to retrieve the data from GridDB, you can use the `get-all-data` route. This route will retrieve all the data from GridDB.
 
@@ -315,15 +315,15 @@ app.get('/get-all-data', async (req, res) => {
 });
 ```
 
-If we run the route in the browser, the server will response with all the data saved in the GridDB database.
+If we run the route in the browser, the server will respond with all the data saved in the GridDB database.
 
 ![all data response](assets/get-all-data.png)
 
 ## Building an End-to-End Application
 
-### Image Uploader
+### Main Application Entry
 
-The upload user interface is pretty simple. We use React library for easier user interface development.
+The upload user interface is pretty simple. We use the React library for easier user interface development.
 
 ![upload ui](assets/upload-ui.png)
 
@@ -355,15 +355,66 @@ const App = () => {
     </div>
 );
 
-};
-
 export default App;
 ```
+The main application entry consists of two components: `<ImageUploader>` and `<ReactMarkdown>`. The `<ImageUploader>` component is responsible for uploading the image to the server, and it returns a result that will be handled by any function that is attached to the `onMarkdownFetch` prop. The markdown data will be rendered in the `<ReactMarkdown>` component.
 
-The `<ImageUplader>` component is responsible for uploading the image into the server and it return a result that will be handled by any function that attach in the `onMarkdownFetch` prop. The markdown data will be rendered in the `<ReactMarkdown>` component.
+### Image Uploader
+
+The `<ImageUploader>` component code resides in the `client/src/ImageUploader.jsx` file. The handler for the image upload is in the `handleUpload` function. This function will post the image to the `/process-image` route in the server, and the result from the server will be handled by the `onMarkdownFetch` prop.
+
+```jsx
+const handleUpload = async () => {
+        if (selectedFile && !uploading) { 
+            setUploading(true); 
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            try {
+                const response = await fetch('/process-image', {
+                    method: 'POST',
+                    body: formData,
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const markdownData = await response.json();
+                props.onMarkdownFetch(markdownData);
+            } catch (error) {
+                console.error('Error posting image:', error);
+            } finally {
+                setUploading(false);
+            }
+        } else {
+            alert('Please select an image first.');
+        }
+    };
+```
+
 
 ###  Markdown Renderer
 
+Luckily, there is a React component in the npm package readily used for rendering markdown purposes. The [react-markdown](https://github.com/remarkjs/react-markdown) is easy to use and integrate with any React application. 
+
+```jsx
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+
+...
+<ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{markdown}</ReactMarkdown>
+...
+```
+
+We need to add `remark-gfm` and `rehype-raw` plugins. The `remark-gfm` plugin is used to render the markdown table, and the `rehype-raw` plugin is used to render the markdown table as a raw HTML element so we can add style to it later.
+
+
+## Limitations
+
+This project is a simple demonstration of how to use GPT4 Vision to process image data and store the result in GridDB. There are many ways to improve this project. 
+
+Currently, the project only supports a clear and clean image containing only a table in it. With the current state of the GPT4 Vision model, which is still in preview, it is not possible to process a noisy image, such as an image containing table data mixed with other text or images. The best way to improve this project is to crop the image containing the table data and then process it using GPT4 Vision.
 
 
 ## References
