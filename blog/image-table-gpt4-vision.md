@@ -69,7 +69,7 @@ cd extract-image-table-gpt4-vision/server
 npm install
 ```
 
-Create a `.env` file in the root directory of the project. The `.env` file should look like this:
+Create a `.env` file in the root directory of the project and write the OpenAI API key. The `.env` file should look like this:
 
 ```
 OPENAI_API_KEY=<your-api-key>
@@ -85,16 +85,25 @@ npm start
 
 In the browser, go to the default project URL: `http://localhost:5115` and try to upload an image with tabular data within.
 
-[//]: # (todo: create a gif to showcase the project)
 ![app screenshot](assets/app-screenshot.png )
 
 GPT-4 Vision will process the image and extract the tabular data from it. The tabular data will be displayed on the web page.
+
+> Please note there is a limitation in this project. The image must contain only tabular data. If the image contains other text or images, the GPT-4 Vision model in the current state will not be able to process it.
 
 ## Project Architecture
 
 ![project data diagram](assets/project-data-gpt4.png)
 
-The project follows a standard web application architecture. When an image containing tabular data is uploaded, Node.js will call upon GPT-4 Vision from OpenAI to process the image. The processed data will then be saved in the GridDB database. Afterward, the saved data will be displayed on a web page using React.js.
+This architecture diagram outlines a data processing and visualization workflow that incorporates GPT-4 Vision, Node.js, and GridDB. Here's the breakdown:
+
+- The user uploads an image, and **Node.js** will call GPT-4 Vision API to process the image. Node.js is the middle layer, handling the data sent and received from the **GPT-4 Vision** model. 
+
+- The Node.js also communicates with **GridDB**, a database for storing and retrieving the data. GridDB would be used to persistently store the processed tabular data.
+
+- The display data component at the bottom of the diagram indicates that the application shows the data. It's a web interface built using **React.js**.
+
+The project at hand is a web application that is designed to be simple yet powerful. The application is enriched with the advanced capabilities of GPT-4 Vision model, which elevates its functionality to a whole new level.
 
 ## Understanding GPT4-Vision
 
