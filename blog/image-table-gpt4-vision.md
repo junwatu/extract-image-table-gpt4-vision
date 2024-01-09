@@ -83,9 +83,12 @@ Run the server:
 npm start
 ```
 
-In the browser, go to the default project URL: `http://localhost:5115` and try to upload an image that contains tabular data.
+In the browser, go to the default project URL: `http://localhost:5115` and try to upload an image with tabular data within.
 
 [//]: # (todo: create a gif to showcase the project)
+![app screenshot](assets/app-screenshot.png )
+
+GPT-4 Vision will process the image and extract the tabular data from it. The tabular data will be displayed on the web page.
 
 ## Project Architecture
 
@@ -182,22 +185,58 @@ The `processImageRequest` function is essentially a GPT4 Vision API wrapper func
 
 ```js
 async function processImageRequest(filePath) {
+    const imageBuffer = await fs.readFile(filePath);
+    const base64Image = imageBuffer.toString('base64');
+    const encodedImage = `data:image/jpeg;base64,{${base64Image}}`;
+
     const response = await openai.chat.completions.create({
         model: "gpt-4-vision-preview",
         messages: [
             {
                 role: "user",
                 content: [
-                    { type: "text", text: "Recreate table in the image." },
-                    { type: "image_file", image_file: { "path": filePath } },
+                    { type: "text", text: tablePrompt },
+                    { type: "image_url", image_url: { "url": encodedImage } },
                 ],
             },
         ],
         max_tokens: 1024,
     });
-    return response.choices[0];
+    return response;
 }
 ```
+In the code, we use the encoded `base64` format for the image input in GPT4 Vision API. This is because it is easier to reference the image stored in the server's local storage.
+
+For a better result, we will feed the result from the `processImageRequest` function into a more general OpenAI's model called GPT4 to extract the tabular data only: 
+
+```js
+const cleanupPrompt = `I need you to extract the table data from this message and provide the answer in markdown format. Answer only the markdown table data, nothing else. do not use code blocks. \n\n`;
+
+async function cleanupData(data) {
+    const response = await openai.chat.completions.create({
+        model: "gpt-4-1106-preview",
+        messages: [
+            {
+                "role": "system",
+                "content": "you are a smart table data extractor"
+            },
+            {
+                "role": "user",
+                "content": `${cleanupPrompt} \n\n${data}`
+            }
+        ],
+        temperature: 1,
+        max_tokens: 2000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+    });
+
+    return response;
+}
+```
+
+Essentially, the `cleanupData` function will clean up the result from the `processImageRequest` function  by the help of specific prompts. The result will be a markdown table data that can be displayed on the web page.
 
 ## Storing Processed Data in GridDB
 
