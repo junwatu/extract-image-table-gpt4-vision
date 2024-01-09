@@ -39,7 +39,7 @@ const ImageUploader = (props) => {
             } catch (error) {
                 console.error('Error posting image:', error);
             } finally {
-                setUploading(false); // Set uploading to false after the upload is done
+                setUploading(false);
             }
         } else {
             alert('Please select an image first.');
